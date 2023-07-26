@@ -1,5 +1,5 @@
 # cp-notes
-My notes on C++ for competitive programming. 
+My notes on C++ for competitive programming. Images I inserted into notes don't work for the time being
 
 # Tips for C++
 
