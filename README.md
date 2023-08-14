@@ -112,6 +112,15 @@ There are `set` and `unordered_set` that have the same operations. Note that all
 
 Use the function `find(x)` NOT `set_name[]` to access values in a set. Note `find(x)` returns an iterator that points to the element `x` .
 
+```cpp
+// check if element exists in a set
+set<int> yay = {1,2,3,4};
+auto it = yay.find(x);
+if (it == yay.end(){
+// x does not exist in the set yay
+}
+```
+
 ## Maps
 
 A map is a pair: a key and it’s corresponding value (analogy: a key unlocks a unique door, and a door can represent a value)
@@ -456,3 +465,69 @@ int main() {
 - (video and image since I’m a bit lazy right now)
 - Search article for algorithm
     - I tried to make a new, “improved” implementation of merge sort. Didn’t work, so for code for this algorithm check out progamiz or geekcode
+
+## How you should probably sort
+
+- you don’t have time to implement your own sorting algorithm.
+- use `sort(arr.begin(), arr.end());`
+- This sorts in O($n \log n$). How it’s sorted depends on compiler, but probably quicksort or merge sort.
+- Also useful for arrange characters in a string alphabetically
+- And if you are using a `pair` data structure it sorts by first element
+
+```cpp
+vector<pair<int,int>> yay = { {1,3}, {2,4}, {1,2} }
+sort(yay.begin(), yay.end());
+// order after sort: {1,2}, {1,3}, {2,4}
+```
+
+# DP
+
+Consider this problem:
+
+you have a set of coins, `coins` = $\{c_1,c_2,…c_k\}$ and a target sum of money, $n$. Find what arrangement of coins gets you to the some $n$ and uses the least number of coins. 
+
+- Suppose `coins`= {1,2,5}. Then the greedy solution would take the biggest coin values first. i.e. 5 + 5 + 2 = 12
+- But the greedy solution is not always the optimal solution
+    - i.e. $n$ = 6 and `coins` = {1,3,4}. Greed solution: 4 + 1 + 1. Optimal solution: 3 + 3
+- My implementation of the greedy approach (not tested on any grader. It assumes you can make the target sum):
+
+```cpp
+#include<iostream>
+#include<string>
+#include<vector>
+#include<unordered_map>
+#include<utility>
+#include<algorithm>
+#include<cmath>
+using namespace std;
+int main() {
+	int coinCount{};
+	coinCount = 3;
+	vector<int> coins(5);
+	coins = { 1,3,4 };
+	int target{};
+	target = 6;
+	// sort coins array
+	sort(coins.begin(), coins.end());
+	int i = 1;
+	while (i <= coinCount){
+		if (coins[coinCount - i] <= target) {
+			// for debugging
+			cout << "before: " << target << " | After ";
+			target -= coins[coinCount - i];
+			cout << target << " | coin used is: ";
+			cout << coins[coinCount - i] << endl;
+		}
+		else
+			++i;
+	}
+	return 0;
+}
+```
+
+- So greedy approach is not the best approach
+- You could brute force it but that’s too slow for large inputs
+- So there’s something called DP - dynamic programming - which you can use.
+- Start off by framing it as a recursive problem
+
+— to be continued
