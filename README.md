@@ -529,5 +529,102 @@ int main() {
 - You could brute force it but that’s too slow for large inputs
 - So there’s something called DP - dynamic programming - which you can use.
 - Start off by framing it as a recursive problem
+    - we frame the solution to the problem as a solution to smaller subproblems
+- Coin problem recursive solution: have a function `solve(x)`, which outputs the minimum number of coins to hit the target sum
+- Recursive solution:
+    - pick a coin start off with. Then run `solve(x-c)` where $x$ is the target sum, and $c$ is the coin you selected
 
-— to be continued
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/35c48e34-3992-4af9-8b7d-4495d274b2bf/Untitled.png)
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bf8d8768-8f18-45e6-8760-2a54225dfd59/Untitled.png)
+
+The recursive solution:
+
+```cpp
+// preamble not included
+// this code is not tested!! Writing it in Notion.
+int inf = 10000;
+vector<int> coins = {1,3,4};
+int target = 6;
+int solve( int x ) {
+	int best = inf;
+	// x = 0
+	if (x == 0)
+		return 0;
+	// x < 0
+	if (x < 0) // using else if should also work
+		return inf;
+	// cycle through each coin. Subproblem: solve(x-c), where c is the coin value
+	for (auto c : coins) {
+			best = min (best, solve(x-c)+1);
+	}
+	return best;
+}
+
+int main () {
+	cout << solve (target);
+return 0;
+}
+```
+
+- The recursive solution is slow for big inputs!! Try `target = 1005`, does not load.
+- There’s a lot of repeating computations in the step `best = min(best, solve(x-c)+1)`. What if we store the output of the recursive function the first time it runs, and have an if statement to check if we’ve calculated it before.
+- Storing the result of prior recursive calls is called memoization
+    - Here’s my solution to CCC 2000 S4, using memoization.
+
+```cpp
+#include<iostream>
+#include<string>
+#include<vector>
+#include<unordered_map>
+#include<utility>
+#include<algorithm>
+#include<cmath>
+using namespace std;
+// dp solution :D
+
+#define inf 10000
+vector<int> strokes;
+vector<bool> visited;
+vector<int> visited_ans;
+
+int Count(int target) {
+	// target = 0
+	int best = inf;
+	if (target == 0)
+		return 0;
+	// target < 0
+	else if (target < 0)
+		return inf;
+	if (visited[target]) {
+		return visited_ans[target];
+	}
+// recursive call
+	for (auto n : strokes) {
+		best = min(best, Count(target - n) + 1);
+	}
+	visited[target] = true;
+	visited_ans[target] = best;
+	return best;
+}
+int main() {
+	int distance;
+	cin >> distance;
+	int clubs;
+	cin >> clubs;
+	strokes = vector<int>(clubs, 0);
+	visited = vector<bool>(distance+1, false);
+	visited_ans = vector<int>(distance+1, 0);
+	for (int i = 0; i < clubs; ++i) {
+		cin >> strokes[i];
+	}
+	int temp = Count(distance);
+	if (temp == inf)
+		cout << "Roberta acknowledges defeat.";
+	else
+		cout << "Roberta wins in " << temp << " strokes.";
+	return 0;
+}
+```
+
+- Would be a bit more efficient if we removed the visited bool vector. Instead, an unvisited recursive call is a negative number by default, since there is no way the recursive function outputs a negative number.
