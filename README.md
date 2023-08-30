@@ -327,7 +327,7 @@ place a queen on row $y$
 
 ### Big O notation rules
 
-- Single commands have time complexity of O(n)
+- Single commands have time complexity of O(1)
 
 i.e.
 
